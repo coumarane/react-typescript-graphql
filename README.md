@@ -17,7 +17,8 @@ The front-side with reactjs, typescript, graphql, apolloclient, etc...
 - $ npm start
 - open your favorite web browser and in the url type this http://localhost:5000/graphql
 
-**Test Graph:**
+**Test GraphQL:**
+
 To add a new entry (you can add several entries):
 ```
 mutation {
