@@ -43,6 +43,21 @@ const RootMutation = new GraphQLObjectType({
         const newContact = ContactLocalStorageService.saveContact(contact);
         return newContact;
       }
+    },
+
+    updateContact: {
+      type: ContactType,
+      args: {
+        id: { type: GraphQLID },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        dateOfBirth: { type: new GraphQLNonNull(GraphQLString) }
+      },
+      resolve: (parent, args) => {
+        const contact: IContact = {id: +args.id, name: args.name, email: args.email, dateOfBirth: args.dateOfBirth}
+        const updateContact = ContactLocalStorageService.updateContact(contact.id, contact);
+        return updateContact;
+      }
     }
   }
 });
