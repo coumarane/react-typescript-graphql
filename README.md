@@ -1,4 +1,4 @@
-This project is a CRUD app which with two parts:
+This project is a CRUD app which has two parts:
 - Server
 - Client
 
