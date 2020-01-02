@@ -21,7 +21,8 @@ The front-side with reactjs, typescript, graphql, apolloclient, etc...
 **How to use ApolloProvider in Front-End :**
 Create .env file in the same level as package.json and and this variable: 
 REACT_APP_GRAPH_URI: http://localhost:5000
-The port is 500 because the server expressjs is launched on the port 5000 (see the .env file in server folder)
+The port is 5000 because the server expressjs is launched on this port (see the .env file in server folder).
+Add the following code in App.tsx.
 
 ```
 import * as React from "react";
