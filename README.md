@@ -10,7 +10,59 @@ The package node-localstorage [https://www.npmjs.com/package/node-localstorage] 
 The front-side with reactjs, typescript, graphql, apolloclient, etc...
 
 
-## GraphQL Front-End
+## Run back-end:
+- $ git clone https://github.com/coumarane/react-typescript-graphql.git
+- $ cd server
+- $ npm install
+- $ npm start
+- open your favorite web browser and in the url type this http://localhost:5000/graphql
+
+**Test Graph:**
+To add a new entry (you can add several entries):
+```
+mutation {
+  addContact(name: "Coumarane COUPPANE", email: "c.coumarane@gmail.com", dateOfBirth: "24/07/1975")
+  {
+    id
+  }
+}
+```
+
+To get all entries:
+
+```
+query {
+  contacts {
+    id
+    name
+    email
+    dateOfBirth
+  }
+}
+```
+
+To get an entry by its id:
+
+```
+query {
+  contact(id: 1) {
+    id
+    name
+    email
+    dateOfBirth
+  }
+}
+```
+
+## Run front-end:
+Open a new terminal and goto to the "react-typescript-graphql" and follows the instructions below:
+$ cd client
+$ npm install
+$ npm start
+
+## Note:
+
+**GraphQL Front-End**
 - $ npm install --save graphql
 - $ npm install --save graphql-tag
 - $ npm install --save apollo-boost

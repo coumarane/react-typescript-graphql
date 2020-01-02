@@ -1,9 +1,11 @@
 import * as React from "react";
+import { useMutation, useApolloClient } from "react-apollo";
 import { IContact } from "../../models/contact";
+import { AddContactMutation, UpdateContactMutation } from "../../graphql/mutations/contact.mutations";
+import { ContactDetailQuery, ContactListQuery } from "../../graphql/queries/contact.queries";
 
 interface IOwnProps {
-  handleSaveContact: (contact: IContact) => void;
-  editContact?: IContact;
+  editContactId?: number;
 }
 
 const ContactCreation: React.FunctionComponent<IOwnProps> = (
@@ -15,23 +17,22 @@ const ContactCreation: React.FunctionComponent<IOwnProps> = (
     email: "",
     dateOfBirth: ""
   };
+
+  const client = useApolloClient();
   
+  const [addContact] = useMutation(AddContactMutation);
+
   // contact is a state variable
   const [contact, setContact] = React.useState(initialContcatState);
 
-  // Similar to componentDidMount, componentDidUpdate and componentWillUnmount
   React.useEffect(() => {
-    // Update document title via browser API
-    if (contact.name !== "") {
-      document.title = `The entered name is ${contact.name}`;
+    if (props.editContactId && props.editContactId! > 0) {
+      client.query({query: ContactDetailQuery, variables: {id: props.editContactId}}).then(result => {
+        const contact = result.data.contact as IContact
+        setContact(contact)
+      });
     }
-  }, [contact.name]); // Execute the effect only if contact.name has changed
-
-  React.useEffect(() => {
-    if (props.editContact) {
-      setContact(props.editContact!)
-    }
-  }, [props.editContact])
+  }, [props.editContactId])
 
   const handleReset = () => {
     setContact(initialContcatState);
@@ -41,9 +42,24 @@ const ContactCreation: React.FunctionComponent<IOwnProps> = (
     e: any // React.SyntheticEvent<HTMLInputElement | HTMLButtonElement>
   ) => {
     e.preventDefault();
-    
     // console.log(`ContactCreation::handleSubmit=>contact ${JSON.stringify(contact)}`);
-    props.handleSaveContact(contact);
+    if (contact.id > 0) {
+      client.mutate({mutation: UpdateContactMutation, variables: {
+        id: contact.id,
+        name: contact.name,
+        email: contact.email,
+        dateOfBirth: contact.dateOfBirth
+      }, refetchQueries: [{query: ContactListQuery}]}).then(result => {
+        const contact = result.data.contact as IContact
+        console.log(`Updated successfully...`)
+      });
+    } else {
+      addContact({
+        variables: {name: contact.name, email: contact.email, dateOfBirth: contact.dateOfBirth},
+        refetchQueries: [{query: ContactListQuery}] // to update ContactListQuery on ContactList.tsx
+      })
+    }
+    
     handleReset();
   };
 

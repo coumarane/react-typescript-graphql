@@ -4,10 +4,14 @@ import ContactList from "../contact/contact.list";
 import { IContact } from "../../models/contact";
 import ContactCreation from "../contact/contact.creation";
 import ContactLocalStorageService from "../../services/contactLocalStorageService";
+import apolloClient from "../../graphql/apollo.client";
+import { ContactListQuery } from "../../graphql/queries/contact.queries";
+import { DeleteContactMutation } from "../../graphql/mutations/contact.mutations";
 
 interface IOwnState {
   contacts: IContact[];
-  editContact: IContact;
+  editContact?: IContact;
+  editContactId?: number;
 }
 
 type IUnionProps = RouteComponentProps<any>;
@@ -23,15 +27,11 @@ class Contact extends React.Component<IUnionProps, IOwnState> {
       dateOfBirth: ""
     };
 
-    // const [contacts, setContacts] = React.useState({});
     this.state = {
       contacts: [],
-      editContact: initialContcatState
+      editContact: initialContcatState,
+      editContactId: 0
     };
-  }
-
-  componentDidMount() {
-    this.loadContacts();
   }
 
   render() {
@@ -72,17 +72,15 @@ class Contact extends React.Component<IUnionProps, IOwnState> {
   
             
             <ContactCreation
-              handleSaveContact={this.handleCreateOrUpdate}
-              editContact={this.state.editContact}
+              editContactId={this.state.editContactId}
             />
             
             <ContactList
-              datas={this.state.contacts}
               handleDelete={this.handleDelete}
               handleEdit={this.handleEdit}
             />
 
-            {this.renderDeleteAllButton()}
+            {/* {this.renderDeleteAllButton()} */}
           </div>
         </div>
       </>
@@ -108,38 +106,21 @@ class Contact extends React.Component<IUnionProps, IOwnState> {
     }
   };
 
-
-  loadContacts = () => {
-    const dbcontacts = ContactLocalStorageService.fetchContacts();
-    this.setState({ contacts: dbcontacts! });
-  };
-
-  handleCreateOrUpdate = (contact: IContact) => {
-    if (contact.id > 0) {
-      ContactLocalStorageService.updateContact(contact.id, contact);
-    } else {
-      ContactLocalStorageService.saveContact(contact);
-    }
-    // this.handleHideForm();
-    this.loadContacts();
-  };
-
   handleDelete = (id: number) => (e: React.MouseEvent) => {
     ContactLocalStorageService.deleteById(id);
-    this.loadContacts();
+    apolloClient.mutate({mutation: DeleteContactMutation, variables: {
+      id: id,
+    }, refetchQueries: [{query: ContactListQuery}]}).then(result => {
+      console.log(`Deleted successfully...`)
+    });
   };
 
-  handleEdit = (id: number) => (e: React.MouseEvent) => {
-    const contact = ContactLocalStorageService.getById(id);
-    if (contact) {
-      // console.log(`handleEdit=>contact: ${JSON.stringify(contact)}`)
-      this.setState({ editContact: contact });
-    }
+  handleEdit = (id: number) => (e: React.MouseEvent) => {    
+    this.setState({editContactId: id})
   };
 
   handleDeleteAll = () => {
     ContactLocalStorageService.clearData();
-    this.loadContacts();
   };
 }
 
