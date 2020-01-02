@@ -19,7 +19,7 @@ The front-side with reactjs, typescript, graphql, apolloclient, etc...
 
 **Test GraphQL:**
 
-To add a new entry (you can add several entries):
+Play with andd several several entries:
 ```
 mutation {
   addContact(name: "Coumarane COUPPANE", email: "c.coumarane@gmail.com", dateOfBirth: "24/07/1975")
