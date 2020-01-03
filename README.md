@@ -15,11 +15,11 @@ The front-side with reactjs, typescript, graphql, apolloclient, etc...
 - $ cd server
 - $ npm install
 - $ npm start
-- open your favorite web browser and in the url type this http://localhost:5000/graphql
+- open your favorite web browser and enter the following url http://localhost:5000/graphql in address bar
 
 **Test GraphQL:**
 
-Play with andd several several entries:
+Play with by adding lot of entries:
 ```
 mutation {
   addContact(name: "Coumarane COUPPANE", email: "c.coumarane@gmail.com", dateOfBirth: "24/07/1975")
