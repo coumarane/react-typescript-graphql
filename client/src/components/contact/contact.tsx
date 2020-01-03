@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import ContactList from "../contact/contact.list";
 import { IContact } from "../../models/contact";
 import ContactCreation from "../contact/contact.creation";
-import ContactLocalStorageService from "../../services/contactLocalStorageService";
 import apolloClient from "../../graphql/apollo.client";
 import { ContactListQuery } from "../../graphql/queries/contact.queries";
 import { DeleteContactMutation } from "../../graphql/mutations/contact.mutations";
@@ -107,7 +106,6 @@ class Contact extends React.Component<IUnionProps, IOwnState> {
   };
 
   handleDelete = (id: number) => (e: React.MouseEvent) => {
-    ContactLocalStorageService.deleteById(id);
     apolloClient.mutate({mutation: DeleteContactMutation, variables: {
       id: id,
     }, refetchQueries: [{query: ContactListQuery}]}).then(result => {
@@ -120,7 +118,7 @@ class Contact extends React.Component<IUnionProps, IOwnState> {
   };
 
   handleDeleteAll = () => {
-    ContactLocalStorageService.clearData();
+    console.log(`TODO: implement delete all functionnality`)
   };
 }
 

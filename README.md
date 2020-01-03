@@ -55,6 +55,15 @@ query {
 }
 ```
 
+To delete an entry by its id:
+
+```
+mutation {
+  deleteContact(id: 1)
+}
+
+```
+
 ## Run front-end:
 Open a new terminal and goto to the "react-typescript-graphql" and follows the instructions below:
 $ cd client

@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLSchema, GraphQLObjectType, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLBoolean } from "graphql";
 import { ContactType } from "./types/contact.type";
 import ContactLocalStorageService from "../services/contactLocalStorageService";
 import { IContact } from "src/models/contact";
@@ -19,7 +19,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(ContactType),
       resolve: () => {
         const datas = ContactLocalStorageService.fetchContacts();
-        console.log(`contacts: ${JSON.stringify(datas)}`)
+        // console.log(`contacts: ${JSON.stringify(datas)}`)
         return datas;
       }
     }
@@ -48,7 +48,7 @@ const RootMutation = new GraphQLObjectType({
     updateContact: {
       type: ContactType,
       args: {
-        id: { type: GraphQLID },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: new GraphQLNonNull(GraphQLString) },
         dateOfBirth: { type: new GraphQLNonNull(GraphQLString) }
@@ -58,7 +58,19 @@ const RootMutation = new GraphQLObjectType({
         const updateContact = ContactLocalStorageService.updateContact(contact.id, contact);
         return updateContact;
       }
-    }
+    },
+
+    deleteContact: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      resolve: (parent, args) => {
+        ContactLocalStorageService.deleteById(+args.id);
+        return true;
+      }
+    },
+    
   }
 });
 
